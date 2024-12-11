@@ -11,7 +11,7 @@ function Home() {
         <div className="col-span-2 ">
           <Aside />
         </div>
-        <div className="col-span-full bg-green-100 md:col-span-6">
+        <div className="col-span-full bg-lime-400 md:col-span-6 rounded-lg p-5">
           <Form />
         </div>
       </div>
