@@ -8,7 +8,7 @@ function Home() {
       <Header />
 
       <div className="grid grid-cols-8">
-        <div className="col-span-2 hidden bg-red-100 md:block">
+        <div className="col-span-2 ">
           <Aside />
         </div>
         <div className="col-span-full bg-green-100 md:col-span-6">
