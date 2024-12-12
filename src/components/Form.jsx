@@ -1,41 +1,45 @@
 import { TbFlareFilled } from "react-icons/tb";
 import Intro from "@/components/Intro";
 import { useState } from "react";
+const services = [
+  "Website Design",
+  "Content",
+  "UX Design",
+  "Strategy",
+  "User Research",
+  "Other",
+];
 
 function Form() {
   const [formData, setFormData] = useState({
     fullname: "",
     email: "",
     message: "",
-    services: [],
   });
 
-  const services = [
-    "Website Design",
-    "Content",
-    "UX Design",
-    "Strategy",
-    "User Research",
-    "Other",
-  ];
+  const [selectedServices, setSelectedServices] = useState([]);
 
+  const handleCheckbox = (value, checked) => {
+    if (checked) {
+      setSelectedServices((prevState) => [...prevState, value]);
+    } else {
+      setSelectedServices((prevState) => {
+        return prevState.filter((item) => item !== value);
+      });
+    }
+  };
+    
   const handleSubmit = (e) => {
-    console.log(formData);
     e.preventDefault();
+    console.log(selectedServices);
+    
   };
 
   const handleChange = (value, property) => {
     setFormData({ ...formData, [property]: value });
   };
 
-  const handleCheckbox = (value, checked) => {
-    if (checked) {
-      console.log(`Theek hai mein ${value} ko add kar dunga`);
-      return;
-    }
-
-    console.log(`Theek hai mein ${value} ko remove kar dunga`);
-  };
+  
 
   return (
     <>
