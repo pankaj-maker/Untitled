@@ -1,6 +1,7 @@
 import { TbFlareFilled } from "react-icons/tb";
 import Intro from "@/components/Intro";
 import { useState } from "react";
+
 const services = [
   "Website Design",
   "Content",
@@ -11,6 +12,7 @@ const services = [
 ];
 
 function Form() {
+  
   const [formData, setFormData] = useState({
     fullname: "",
     email: "",
@@ -20,35 +22,35 @@ function Form() {
   const [selectedServices, setSelectedServices] = useState([]);
 
   const handleCheckbox = (value, checked) => {
-    if (checked) {
-      setSelectedServices((prevState) => [...prevState, value]);
-    } else {
-      setSelectedServices((prevState) => {
-        return prevState.filter((item) => item !== value);
-      });
-    }
+    setSelectedServices((prevState) => {
+      return checked
+        ? [...prevState, value]
+        : prevState.filter((item) => item !== value);
+    });
   };
-    
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(selectedServices);
-    
+    console.log({ selectedServices, ...formData });
   };
 
   const handleChange = (value, property) => {
     setFormData({ ...formData, [property]: value });
   };
-
   
-
   return (
     <>
+  
+    
       <Intro />
-      <form className="flex flex-col gap-1" onSubmit={handleSubmit}>
+      <form
+        className="flex flex-col gap-1"
+        action={import.meta.env.VITE_SUBMIT_URL}
+      >
         {/* Input */}
         <input
           type="text"
-          name="fullname"
+          name={import.meta.env.VITE_NAME_FEILD}
           id="fullname"
           placeholder="Your name"
           className="border-b border-stone-700 bg-zinc-50 p-2 placeholder-slate-700 md:bg-lime-400"
@@ -58,7 +60,7 @@ function Form() {
         />
         <input
           type="email"
-          name="email"
+          name={import.meta.env.VITE_EMAIL_FEILD}
           id="email"
           placeholder="your@company.com"
           className="border-b border-stone-700 bg-zinc-50 p-2 placeholder-slate-700 md:bg-lime-400"
@@ -68,7 +70,7 @@ function Form() {
         />
         <input
           type="text"
-          name="message"
+          name={import.meta.env.VITE_MESSAGE_FEILD}
           id="message"
           placeholder="Tell us a bit about your project..."
           className="h-24 border-b border-stone-700 bg-zinc-50 p-2 placeholder-slate-700 md:bg-lime-400"
@@ -89,7 +91,8 @@ function Form() {
               >
                 <input
                   type="checkbox"
-                  name={service}
+                  name={import.meta.env.VITE_SERVICE_FEILD}
+                  value={service}
                   className="size-6"
                   onChange={(e) => handleCheckbox(service, e.target.checked)}
                 />
