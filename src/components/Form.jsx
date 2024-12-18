@@ -1,6 +1,7 @@
 import { TbFlareFilled } from "react-icons/tb";
 import Intro from "@/components/Intro";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import utlis from "@/lib/utlis";
 
 const services = [
   "Website Design",
@@ -12,72 +13,62 @@ const services = [
 ];
 
 function Form() {
-  
-  const [formData, setFormData] = useState({
-    fullname: "",
-    email: "",
-    message: "",
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const [selectedServices, setSelectedServices] = useState([]);
-
-  const handleCheckbox = (value, checked) => {
-    setSelectedServices((prevState) => {
-      return checked
-        ? [...prevState, value]
-        : prevState.filter((item) => item !== value);
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ selectedServices, ...formData });
-  };
-
-  const handleChange = (value, property) => {
-    setFormData({ ...formData, [property]: value });
-  };
-  
   return (
     <>
-  
-    
       <Intro />
       <form
         className="flex flex-col gap-1"
-        action={import.meta.env.VITE_SUBMIT_URL}
+        onSubmit={handleSubmit((data) => {
+          console.log(data);
+        })}
       >
         {/* Input */}
         <input
           type="text"
-          name={import.meta.env.VITE_NAME_FEILD}
+          {...register("fullname", {
+            required: "Please enter your name",
+          })}
           id="fullname"
           placeholder="Your name"
           className="border-b border-stone-700 bg-zinc-50 p-2 placeholder-slate-700 md:bg-lime-400"
-          required
-          value={formData.fullname}
-          onChange={(e) => handleChange(e.target.value, "fullname")}
         />
+        {errors.fullname && (
+          <p className="text-red-500">{errors.fullname.message}</p>
+        )}
         <input
-          type="email"
-          name={import.meta.env.VITE_EMAIL_FEILD}
+          type="text"
+          {...register("email",{
+            required: "Please enter your email",
+            pattern: {
+              value:/[\w]*@*[a-z]*\.*[\w]{1,}(\.)*(com)*(@gmail\.com)/g,
+              message: "Please enter a valid email",
+            },
+          })}
           id="email"
           placeholder="your@company.com"
           className="border-b border-stone-700 bg-zinc-50 p-2 placeholder-slate-700 md:bg-lime-400"
-          required
-          value={formData.email}
-          onChange={(e) => handleChange(e.target.value, "email")}
         />
+        {errors.email && (
+          <p className="text-red-500">{errors.email.message}</p>
+        )}
         <input
           type="text"
-          name={import.meta.env.VITE_MESSAGE_FEILD}
+          {...register("message",{
+            required: "Please enter your message",
+          })}
           id="message"
           placeholder="Tell us a bit about your project..."
           className="h-24 border-b border-stone-700 bg-zinc-50 p-2 placeholder-slate-700 md:bg-lime-400"
-          required
-          value={formData.message}
-          onChange={(e) => handleChange(e.target.value, "message")}
         />
+        {errors.message && (
+          <p className="text-red-500">{errors.message.message}</p>
+        )}
 
         <p className="my-5 text-zinc-800">How can we help?</p>
 
@@ -91,16 +82,20 @@ function Form() {
               >
                 <input
                   type="checkbox"
-                  name={import.meta.env.VITE_SERVICE_FEILD}
+                  {...register("service",{
+                    required: "Please select a service",
+                  })}
                   value={service}
                   className="size-6"
-                  onChange={(e) => handleCheckbox(service, e.target.checked)}
                 />
                 {service}
               </label>
             );
           })}
         </section>
+        {errors.service && (
+          <p className="text-red-500">{errors.service.message}</p>
+        )}
         <button
           type="submit"
           className="flex justify-center gap-2 rounded-lg bg-stone-950 p-2 text-white"
