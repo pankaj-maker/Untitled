@@ -1,7 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { TbFlareFilled } from "react-icons/tb";
 import Intro from "@/components/Intro";
 import { useForm } from "react-hook-form";
-import utlis from "@/lib/utlis";
+import utils from "@/lib/utils";
+
+
 
 const services = [
   "Website Design",
@@ -13,20 +16,56 @@ const services = [
 ];
 
 function Form() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
+ 
+
+  const  handleFormSubmit =  async(data) => {
+    const res = await fetch('https://vector.profanity.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: data.message })
+    });
+
+    const resData = await res.json();
+    
+    if(resData.isProfanity){
+     return navigate("/error",{
+        state:{
+          badWord: resData.flaggedFor,
+        }
+      });
+    }
+
+    const formData = new FormData();
+    formData.append(utils.fullname, data.fullname);
+    formData.append(utils.email, data.email);
+    formData.append(utils.message, data.message);
+    formData.append(utils.service, data.service);
+    fetch(utils.sumbitUrl, {
+      method: "POST",
+      body: formData,
+      mode:"no-cors",
+      
+    }).then(() => {
+        navigate("/submission",{
+          state:{
+            name: data.fullname,
+          }
+        });
+    });
+  }
   return (
     <>
       <Intro />
       <form
         className="flex flex-col gap-1"
-        onSubmit={handleSubmit((data) => {
-          console.log(data);
-        })}
+        onSubmit={handleSubmit(handleFormSubmit)}
       >
         {/* Input */}
         <input
@@ -92,10 +131,11 @@ function Form() {
               </label>
             );
           })}
-        </section>
-        {errors.service && (
+          {errors.service && (
           <p className="text-red-500">{errors.service.message}</p>
         )}
+        </section>
+        
         <button
           type="submit"
           className="flex justify-center gap-2 rounded-lg bg-stone-950 p-2 text-white"
